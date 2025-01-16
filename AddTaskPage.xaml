@@ -1,0 +1,17 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SchedulePlannerApp.AddTaskPage"
+             Title="Добавить задачу">
+
+    <!-- Основной стек -->
+    <VerticalStackLayout Padding="20">
+        <Label Text="Название задачи:" />
+        <Entry x:Name="TaskNameEntry" Placeholder="Введите название" />
+
+        <Label Text="Время напоминания:" />
+        <TimePicker x:Name="TaskTimePicker" />
+
+        <Button Text="Сохранить" 
+                Clicked="OnSaveTaskClicked" />
+    </VerticalStackLayout>
+</ContentPage>

@@ -1,0 +1,27 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SchedulePlannerApp.MainPage"
+             Title="Планировщик задач">
+
+    <!-- Основной стек для вертикального расположения элементов -->
+    <VerticalStackLayout Padding="20">
+        <!-- Заголовок -->
+        <Label Text="Ваши задачи" 
+               FontSize="24" 
+               HorizontalOptions="Center" />
+
+        <!-- Список задач -->
+        <ListView x:Name="TaskListView" Margin="0,20">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}" 
+                              Detail="{Binding Time}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- Кнопка добавления задачи -->
+        <Button Text="Добавить задачу" 
+                Clicked="OnAddTaskClicked" />
+    </VerticalStackLayout>
+</ContentPage>

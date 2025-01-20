@@ -1,4 +1,7 @@
+using System;
 using System.Collections.ObjectModel;
+using Microsoft.Maui.Controls;
+using static SchedulePlannerApp.MainPage;
 
 namespace SchedulePlannerApp
 {
@@ -17,11 +20,13 @@ namespace SchedulePlannerApp
             var task = new TaskItem
             {
                 Name = TaskNameEntry.Text,
-                Time = TaskTimePicker.Time.ToString()
+                Time = TaskTimePicker.Time.ToString(),
+                NotificationTime = DateTime.Today.Add(TaskTimePicker.Time) // Установка времени уведомления на основе выбранного времени
             };
 
             _tasks.Add(task);
             await Navigation.PopAsync();
         }
+
     }
 }

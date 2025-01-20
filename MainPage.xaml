@@ -14,11 +14,40 @@
         <ListView x:Name="TaskListView" Margin="0,20">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding Name}" 
-                              Detail="{Binding Time}" />
+                    <ViewCell>
+                        <Grid Padding="5" ColumnDefinitions="*, Auto" RowDefinitions="Auto">
+                            <!-- Текст задачи -->
+                            <StackLayout Grid.Column="0" VerticalOptions="CenterAndExpand">
+                                <Label Text="{Binding Name}" 
+                               FontSize="14"
+                               LineBreakMode="WordWrap"
+                               VerticalOptions="CenterAndExpand" 
+                               HorizontalOptions="StartAndExpand" />
+                                <Label Text="{Binding Time}" 
+                               FontSize="16" 
+                               TextColor="Gray"
+                               VerticalOptions="CenterAndExpand" 
+                               HorizontalOptions="StartAndExpand" />
+                            </StackLayout>
+
+                            <!-- Кнопка удаления -->
+                            <ImageButton Grid.Column="1"
+                                 Source="delete.png"
+                                 CommandParameter="{Binding .}"
+                                 Clicked="OnDeleteTaskClicked"
+                                 HorizontalOptions="End"
+                                 VerticalOptions="Center"
+                                 WidthRequest="35" 
+                                 HeightRequest="35" />
+                        </Grid>
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+
+
+
 
         <!-- Кнопка добавления задачи -->
         <Button Text="Добавить задачу" 

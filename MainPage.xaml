@@ -24,8 +24,7 @@
                                          CommandParameter="{Binding .}"
                                          Clicked="OnCompleteTaskClicked"
                                          WidthRequest="35"
-                                         HeightRequest="35"
-                                         />
+                                         HeightRequest="35"/>
 
                                 <!-- Кнопка удаления -->
                                 <ImageButton Grid.Column="2"

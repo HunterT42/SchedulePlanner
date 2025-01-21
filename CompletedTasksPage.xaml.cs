@@ -13,5 +13,16 @@ namespace SchedulePlannerApp
             CompletedTasks = completedTasks;
             CompletedTaskListView.ItemsSource = CompletedTasks;
         }
+
+        // Обработчик для удаления выполненной задачи
+        private void OnDeleteCompletedTaskClicked(object sender, EventArgs e)
+        {
+            var button = sender as ImageButton;
+            if (button?.CommandParameter is TaskItem task)
+            {
+                CompletedTasks.Remove(task); // Удаляем задачу из списка выполненных задач
+                // Здесь можно добавить сохранение состояния, если требуется
+            }
+        }
     }
 }

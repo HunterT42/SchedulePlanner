@@ -2,11 +2,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SchedulePlannerApp.CompletedTasksPage"
              Title="Выполненные задачи">
-    <ListView x:Name="CompletedTaskListView">
-        <ListView.ItemTemplate>
-            <DataTemplate>
-                <TextCell Text="{Binding Name}" Detail="{Binding Time}" />
-            </DataTemplate>
-        </ListView.ItemTemplate>
-    </ListView>
+    <VerticalStackLayout Padding="20">
+        <!-- Заголовок -->
+        <Label Text="Выполненные задачи" FontSize="24" HorizontalOptions="Center" />
+
+        <!-- Список выполненных задач -->
+        <ListView x:Name="CompletedTaskListView" Margin="0,20">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="5" ColumnDefinitions="*, Auto" RowDefinitions="Auto">
+                            <!-- Информация о задаче -->
+                            <StackLayout Grid.Column="0" VerticalOptions="CenterAndExpand">
+                                <Label Text="{Binding Name}" FontSize="14" VerticalOptions="CenterAndExpand" />
+                                <Label Text="{Binding Time}" FontSize="16" TextColor="Gray" VerticalOptions="CenterAndExpand" />
+                            </StackLayout>
+
+                            <!-- Кнопка удаления -->
+                            <ImageButton Grid.Column="1"
+                                         Source="delete.png"
+                                         CommandParameter="{Binding .}"
+                                         Clicked="OnDeleteCompletedTaskClicked"
+                                         HorizontalOptions="End"
+                                         VerticalOptions="Center"
+                                         WidthRequest="35"
+                                         HeightRequest="35" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </VerticalStackLayout>
 </ContentPage>

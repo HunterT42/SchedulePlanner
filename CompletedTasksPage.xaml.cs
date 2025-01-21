@@ -1,5 +1,9 @@
 using System.Collections.ObjectModel;
+using System.Text;
 using Microsoft.Maui.Controls;
+
+
+
 
 namespace SchedulePlannerApp
 {
@@ -24,5 +28,6 @@ namespace SchedulePlannerApp
                 // Здесь можно добавить сохранение состояния, если требуется
             }
         }
+
     }
 }

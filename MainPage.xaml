@@ -26,8 +26,8 @@
                                          WidthRequest="35"
                                          HeightRequest="35"/>
 
-                                <!-- Кнопка удаления -->
-                                <ImageButton Grid.Column="2"
+                            <!-- Кнопка удаления -->
+                            <ImageButton Grid.Column="2"
                                          Source="delete.png"
                                          CommandParameter="{Binding .}"
                                          Clicked="OnDeleteTaskClicked"
@@ -41,12 +41,16 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <!-- Кнопка перехода к выполненным задачам -->
-        <Button Text="Просмотр выполненных задач"
-                Clicked="OnViewCompletedTasksClicked"
-                Margin="0,10" />
 
         <!-- Кнопка добавления задачи -->
         <Button Text="Добавить задачу" Clicked="OnAddTaskClicked" />
+            
+            
+        <!-- Кнопка перехода к выполненным задачам -->
+        <Button Text="Просмотр выполненных задач"
+        Clicked="OnViewCompletedTasksClicked"
+        Margin="0,10" />
+            
+            
     </VerticalStackLayout>
 </ContentPage>

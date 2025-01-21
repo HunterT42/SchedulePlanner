@@ -2,16 +2,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SchedulePlannerApp.AddTaskPage"
              Title="Добавить задачу">
-
-    <!-- Основной стек -->
     <VerticalStackLayout Padding="20">
-        <Label Text="Название задачи:" />
-        <Entry x:Name="TaskNameEntry" Placeholder="Введите название" />
+        <!-- Заголовок -->
+        <Label Text="Добавить новую задачу" FontSize="24" HorizontalOptions="Center" />
 
-        <Label Text="Время напоминания:" />
-        <TimePicker x:Name="TaskTimePicker" />
+        <!-- Ввод имени задачи -->
+        <Entry x:Name="TaskNameEntry" Placeholder="Название задачи" />
 
-        <Button Text="Сохранить" 
-                Clicked="OnSaveTaskClicked" />
+        <!-- Выбор даты -->
+        <DatePicker x:Name="TaskDatePicker" Format="D" />
+
+        <!-- Выбор времени -->
+        <TimePicker x:Name="TaskTimePicker" Format="t" />
+
+        <!-- Кнопка добавления задачи -->
+        <Button Text="Добавить задачу" Clicked="OnAddTaskClicked" />
     </VerticalStackLayout>
 </ContentPage>

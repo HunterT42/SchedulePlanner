@@ -27,6 +27,7 @@
                                          VerticalOptions="Center"
                                          WidthRequest="35"
                                          HeightRequest="35" />
+                            
                         </Grid>
                     </ViewCell>
                 </DataTemplate>

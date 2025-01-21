@@ -1,7 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using Microsoft.Maui.Controls;
-using static SchedulePlannerApp.MainPage;
 
 namespace SchedulePlannerApp
 {
@@ -15,18 +14,28 @@ namespace SchedulePlannerApp
             _tasks = tasks;
         }
 
-        private async void OnSaveTaskClicked(object sender, EventArgs e)
+        private void OnAddTaskClicked(object sender, EventArgs e)
         {
-            var task = new TaskItem
+            var taskName = TaskNameEntry.Text;
+            var selectedDate = TaskDatePicker.Date;
+            var selectedTime = TaskTimePicker.Time;
+
+            // —оздаем полное DateTime дл€ уведомлени€
+            var notificationDateTime = selectedDate + selectedTime;
+
+            if (!string.IsNullOrWhiteSpace(taskName))
             {
-                Name = TaskNameEntry.Text,
-                Time = TaskTimePicker.Time.ToString(),
-                NotificationTime = DateTime.Today.Add(TaskTimePicker.Time) // ”становка времени уведомлени€ на основе выбранного времени
-            };
+                var newTask = new TaskItem
+                {
+                    Name = taskName,
+                    Time = notificationDateTime.ToString("g"),
+                    NotificationTime = notificationDateTime,
+                    IsCompleted = false
+                };
 
-            _tasks.Add(task);
-            await Navigation.PopAsync();
+                _tasks.Add(newTask); // ƒобавл€ем новую задачу в список
+                Navigation.PopAsync(); // ¬озвращаемс€ на главную страницу
+            }
         }
-
     }
 }

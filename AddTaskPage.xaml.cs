@@ -30,11 +30,16 @@ namespace SchedulePlannerApp
                     Name = taskName,
                     Time = notificationDateTime.ToString("g"),
                     NotificationTime = notificationDateTime,
-                    IsCompleted = false
+                    IsCompleted = false,
+                    StartTime = DateTime.Now // Устанавливаем текущее время как время создания задачи
                 };
 
                 _tasks.Add(newTask); // Добавляем новую задачу в список
                 Navigation.PopAsync(); // Возвращаемся на главную страницу
+            }
+            else
+            {
+                DisplayAlert("Ошибка", "Пожалуйста, введите название задачи.", "OK");
             }
         }
     }

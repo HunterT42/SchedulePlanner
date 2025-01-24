@@ -22,6 +22,20 @@ namespace SchedulePlannerApp
             CompletedTasks.CollectionChanged += (s, e) => SaveCompletedTasks();
             LoadTasks();
             LoadCompletedTasks();
+            StartTimer(); // Запускаем таймер для обновления оставшегося времени
+        }
+
+        // Таймер для обновления оставшегося времени
+        private void StartTimer()
+        {
+            Dispatcher.StartTimer(TimeSpan.FromSeconds(1), () =>
+            {
+                foreach (var task in Tasks)
+                {
+                    OnPropertyChanged(nameof(task.TimeRemaining)); // Обновляем свойство TimeRemaining
+                }
+                return true; // Таймер продолжается
+            });
         }
 
         // Сохранение задач в локальное хранилище
@@ -87,10 +101,12 @@ namespace SchedulePlannerApp
             var button = sender as ImageButton;
             if (button?.CommandParameter is TaskItem task)
             {
-                task.IsCompleted = true;
-                CompletedTasks.Add(task);
-                Tasks.Remove(task);
-                SaveTasks();
+                task.IsCompleted = true; // Помечаем как выполненную
+                task.StartTime = DateTime.Now; // Фиксируем время выполнения
+                CompletedTasks.Add(task); // Перемещаем в выполненные
+                Tasks.Remove(task); // Удаляем из текущих задач
+                SaveTasks(); // Сохраняем изменения
+                SaveCompletedTasks(); // Сохраняем выполненные задачи
             }
         }
 
@@ -121,28 +137,24 @@ namespace SchedulePlannerApp
         {
             try
             {
-                // Определяем пользовательский тип файла JSON
                 var customJsonFileType = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-        {
-            { DevicePlatform.iOS, new[] { "public.json" } }, // iOS
-            { DevicePlatform.Android, new[] { "application/json" } }, // Android
-            { DevicePlatform.WinUI, new[] { ".json" } }, // Windows
-            { DevicePlatform.MacCatalyst, new[] { "public.json" } } // Mac
-        });
+                {
+                    { DevicePlatform.iOS, new[] { "public.json" } },
+                    { DevicePlatform.Android, new[] { "application/json" } },
+                    { DevicePlatform.WinUI, new[] { ".json" } },
+                    { DevicePlatform.MacCatalyst, new[] { "public.json" } }
+                });
 
-                // Настраиваем параметры выбора файла
                 var pickOptions = new PickOptions
                 {
                     FileTypes = customJsonFileType,
                     PickerTitle = "Выберите JSON файл для импорта"
                 };
 
-                // Вызываем диалог выбора файла
                 var fileResult = await FilePicker.Default.PickAsync(pickOptions);
 
                 if (fileResult != null)
                 {
-                    // Читаем содержимое выбранного файла
                     var importedJson = File.ReadAllText(fileResult.FullPath);
                     var importedTasks = JsonSerializer.Deserialize<ObservableCollection<TaskItem>>(importedJson);
 
@@ -166,15 +178,44 @@ namespace SchedulePlannerApp
                 await DisplayAlert("Ошибка импорта", $"Не удалось импортировать задачи: {ex.Message}", "ОК");
             }
         }
-
     }
 
+    // Модель данных для задачи
     // Модель данных для задачи
     public class TaskItem
     {
         public string Name { get; set; }
-        public string Time { get; set; }
-        public DateTime NotificationTime { get; set; }
-        public bool IsCompleted { get; set; }
+        public string Time { get; set; } // Указанное время выполнения
+        public DateTime NotificationTime { get; set; } // Для уведомлений
+        public bool IsCompleted { get; set; } // Статус выполнения
+        public DateTime StartTime { get; set; } // Время начала выполнения
+
+        // Оставшееся время до выполнения задачи
+        public string TimeRemaining
+        {
+            get
+            {
+                var remaining = NotificationTime - DateTime.Now;
+                if (remaining > TimeSpan.Zero)
+                {
+                    return $"{remaining.Days}д {remaining:hh\\:mm\\:ss}";
+                }
+                return "Время истекло";
+            }
+        }
+
+        // Продолжительность выполнения задачи
+        public TimeSpan? Duration
+        {
+            get
+            {
+                if (IsCompleted)
+                {
+                    return DateTime.Now - StartTime;
+                }
+                return null;
+            }
+        }
     }
+
 }

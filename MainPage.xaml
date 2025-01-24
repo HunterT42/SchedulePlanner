@@ -18,13 +18,13 @@
                                 <Label Text="{Binding Time}" FontSize="16" TextColor="Gray" VerticalOptions="CenterAndExpand" />
                             </StackLayout>
 
-                            <!-- Кнопка выполнения задачи  -->
+                            <!-- Кнопка выполнения задачи -->
                             <ImageButton Grid.Column="1"
                                          Source="checkmark.png"  
                                          CommandParameter="{Binding .}"
                                          Clicked="OnCompleteTaskClicked"
                                          WidthRequest="35"
-                                         HeightRequest="35"/>
+                                         HeightRequest="35" />
 
                             <!-- Кнопка удаления -->
                             <ImageButton Grid.Column="2"
@@ -41,16 +41,22 @@
             </ListView.ItemTemplate>
         </ListView>
 
-
         <!-- Кнопка добавления задачи -->
         <Button Text="Добавить задачу" Clicked="OnAddTaskClicked" />
-            
-            
+
         <!-- Кнопка перехода к выполненным задачам -->
         <Button Text="Просмотр выполненных задач"
-        Clicked="OnViewCompletedTasksClicked"
-        Margin="0,10" />
-            
-            
+                Clicked="OnViewCompletedTasksClicked"
+                Margin="0,10" />
+
+        <!-- Кнопка экспорта задач -->
+        <Button Text="Экспорт задач"
+                Clicked="OnExportTasksClicked"
+                Margin="0,10" />
+
+        <!-- Кнопка импорта задач -->
+        <Button Text="Импорт задач"
+                Clicked="OnImportTasksClicked"
+                Margin="0,10" />
     </VerticalStackLayout>
 </ContentPage>

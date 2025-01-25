@@ -25,34 +25,30 @@ namespace SchedulePlannerApp
             StartTimer(); // Запускаем таймер для обновления оставшегося времени
         }
 
-        // Таймер для обновления оставшегося времени
         private void StartTimer()
         {
             Dispatcher.StartTimer(TimeSpan.FromSeconds(1), () =>
             {
                 foreach (var task in Tasks)
                 {
-                    OnPropertyChanged(nameof(task.TimeRemaining)); // Обновляем свойство TimeRemaining
+                    OnPropertyChanged(nameof(task.TimeRemaining));
                 }
                 return true; // Таймер продолжается
             });
         }
 
-        // Сохранение задач в локальное хранилище
         private void SaveTasks()
         {
             var tasksJson = JsonSerializer.Serialize(Tasks);
             Preferences.Set("SavedTasks", tasksJson);
         }
 
-        // Сохранение выполненных задач
         private void SaveCompletedTasks()
         {
             var completedTasksJson = JsonSerializer.Serialize(CompletedTasks);
             Preferences.Set("SavedCompletedTasks", completedTasksJson);
         }
 
-        // Загрузка задач из локального хранилища
         private void LoadTasks()
         {
             var tasksJson = Preferences.Get("SavedTasks", string.Empty);
@@ -66,7 +62,6 @@ namespace SchedulePlannerApp
             }
         }
 
-        // Загрузка выполненных задач
         private void LoadCompletedTasks()
         {
             var completedTasksJson = Preferences.Get("SavedCompletedTasks", string.Empty);
@@ -87,7 +82,7 @@ namespace SchedulePlannerApp
 
         private void OnDeleteTaskClicked(object sender, EventArgs e)
         {
-            var button = sender as ImageButton;
+            var button = sender as Button;
             if (button?.CommandParameter is TaskItem task)
             {
                 Tasks.Remove(task);
@@ -95,18 +90,17 @@ namespace SchedulePlannerApp
             }
         }
 
-        // Пометка задачи как выполненной
         private void OnCompleteTaskClicked(object sender, EventArgs e)
         {
-            var button = sender as ImageButton;
+            var button = sender as Button;
             if (button?.CommandParameter is TaskItem task)
             {
-                task.IsCompleted = true; // Помечаем как выполненную
-                task.StartTime = DateTime.Now; // Фиксируем время выполнения
-                CompletedTasks.Add(task); // Перемещаем в выполненные
-                Tasks.Remove(task); // Удаляем из текущих задач
-                SaveTasks(); // Сохраняем изменения
-                SaveCompletedTasks(); // Сохраняем выполненные задачи
+                task.IsCompleted = true;
+                task.StartTime = DateTime.Now;
+                CompletedTasks.Add(task);
+                Tasks.Remove(task);
+                SaveTasks();
+                SaveCompletedTasks();
             }
         }
 
@@ -115,7 +109,6 @@ namespace SchedulePlannerApp
             await Navigation.PushAsync(new CompletedTasksPage(CompletedTasks));
         }
 
-        // Экспорт задач в JSON-файл
         private async void OnExportTasksClicked(object sender, EventArgs e)
         {
             try
@@ -132,7 +125,6 @@ namespace SchedulePlannerApp
             }
         }
 
-        // Импорт задач из JSON-файла
         private async void OnImportTasksClicked(object sender, EventArgs e)
         {
             try
@@ -180,17 +172,14 @@ namespace SchedulePlannerApp
         }
     }
 
-    // Модель данных для задачи
-    // Модель данных для задачи
     public class TaskItem
     {
         public string Name { get; set; }
-        public string Time { get; set; } // Указанное время выполнения
-        public DateTime NotificationTime { get; set; } // Для уведомлений
-        public bool IsCompleted { get; set; } // Статус выполнения
-        public DateTime StartTime { get; set; } // Время начала выполнения
+        public string Time { get; set; }
+        public DateTime NotificationTime { get; set; }
+        public bool IsCompleted { get; set; }
+        public DateTime StartTime { get; set; }
 
-        // Оставшееся время до выполнения задачи
         public string TimeRemaining
         {
             get
@@ -198,13 +187,12 @@ namespace SchedulePlannerApp
                 var remaining = NotificationTime - DateTime.Now;
                 if (remaining > TimeSpan.Zero)
                 {
-                    return $"{remaining.Days}д {remaining:hh\\:mm\\:ss}";
+                    return $"{remaining.Days}д {remaining:hh\\:mm}";
                 }
                 return "Время истекло";
             }
         }
 
-        // Продолжительность выполнения задачи
         public TimeSpan? Duration
         {
             get
@@ -217,5 +205,4 @@ namespace SchedulePlannerApp
             }
         }
     }
-
 }

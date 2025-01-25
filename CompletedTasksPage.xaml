@@ -58,12 +58,13 @@
                                        Grid.Column="0"
                                        FontSize="12"
                                        TextColor="Gray" />
-                                <Label Text="{Binding Duration}"
+                                       <Label Text="{Binding DurationFormatted}"
                                        Grid.Row="2"
                                        Grid.Column="1"
                                        FontSize="12"
                                        TextColor="Blue"
                                        HorizontalOptions="End" />
+
 
                                 <!-- Кнопка удаления -->
                                 <ImageButton Source="delete.png"

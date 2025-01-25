@@ -175,11 +175,12 @@ namespace SchedulePlannerApp
     public class TaskItem
     {
         public string Name { get; set; }
-        public string Time { get; set; }
-        public DateTime NotificationTime { get; set; }
-        public bool IsCompleted { get; set; }
-        public DateTime StartTime { get; set; }
+        public string Time { get; set; } // Указанное время выполнения
+        public DateTime NotificationTime { get; set; } // Для уведомлений
+        public bool IsCompleted { get; set; } // Статус выполнения
+        public DateTime StartTime { get; set; } // Время начала выполнения
 
+        // Оставшееся время до выполнения задачи
         public string TimeRemaining
         {
             get
@@ -187,22 +188,46 @@ namespace SchedulePlannerApp
                 var remaining = NotificationTime - DateTime.Now;
                 if (remaining > TimeSpan.Zero)
                 {
-                    return $"{remaining.Days}д {remaining:hh\\:mm}";
+                    // Форматируем оставшееся время
+                    int days = remaining.Days;
+                    int hours = remaining.Hours;
+                    int minutes = remaining.Minutes;
+
+                    // Составляем строку в формате "1д1ч1м"
+                    return $"{(days > 0 ? $"{days}д" : "")}" +
+                           $"{(hours > 0 ? $"{hours}ч" : "")}" +
+                           $"{(minutes > 0 ? $"{minutes}м" : "")}".Trim();
                 }
+
                 return "Время истекло";
             }
         }
 
-        public TimeSpan? Duration
+        // Продолжительность выполнения задачи в строковом формате
+        public string DurationFormatted
         {
             get
             {
                 if (IsCompleted)
                 {
-                    return DateTime.Now - StartTime;
+                    var duration = DateTime.Now - StartTime;
+                    if (duration > TimeSpan.Zero)
+                    {
+                        int days = duration.Days;
+                        int hours = duration.Hours;
+                        int minutes = duration.Minutes;
+
+                        // Форматируем строку в "1д1ч1м"
+                        return $"{(days > 0 ? $"{days}д" : "")}" +
+                               $"{(hours > 0 ? $"{hours}ч" : "")}" +
+                               $"{(minutes > 0 ? $"{minutes}м" : "")}".Trim();
+                    }
                 }
-                return null;
+
+                return "Нет данных";
             }
         }
     }
+
+
 }

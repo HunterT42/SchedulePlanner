@@ -21,7 +21,7 @@ namespace SchedulePlannerApp
         // Обработчик для удаления выполненной задачи
         private void OnDeleteCompletedTaskClicked(object sender, EventArgs e)
         {
-            var button = sender as ImageButton;
+            var button = sender as Button;
             if (button?.CommandParameter is TaskItem task)
             {
                 CompletedTasks.Remove(task); // Удаляем задачу из списка выполненных задач

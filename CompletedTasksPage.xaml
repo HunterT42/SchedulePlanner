@@ -67,15 +67,17 @@
 
 
                                 <!-- Кнопка удаления -->
-                                <ImageButton Source="delete.png"
-                                             Grid.Row="0"
-                                             Grid.Column="1"
-                                             VerticalOptions="Center"
-                                             HorizontalOptions="End"
-                                             CommandParameter="{Binding .}"
-                                             Clicked="OnDeleteCompletedTaskClicked"
-                                             WidthRequest="35"
-                                             HeightRequest="35" />
+                                <Button Text="Удалить"
+                                        Grid.Row="3"
+                                        Grid.ColumnSpan="2"
+                                        CommandParameter="{Binding .}"
+                                        Clicked="OnDeleteCompletedTaskClicked"
+                                        BackgroundColor="Red"
+                                        TextColor="White"
+                                        CornerRadius="5"
+                                        WidthRequest="100"
+                                        HorizontalOptions="End" />          
+
                             </Grid>
                         </Frame>
                     </DataTemplate>

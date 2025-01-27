@@ -1,4 +1,6 @@
+using System;
 using System.Collections.ObjectModel;
+using Microsoft.Maui.Controls;
 
 namespace SchedulePlannerApp
 {
@@ -12,16 +14,33 @@ namespace SchedulePlannerApp
             _tasks = tasks;
         }
 
-        private async void OnSaveTaskClicked(object sender, EventArgs e)
+        private void OnAddTaskClicked(object sender, EventArgs e)
         {
-            var task = new TaskItem
-            {
-                Name = TaskNameEntry.Text,
-                Time = TaskTimePicker.Time.ToString()
-            };
+            var taskName = TaskNameEntry.Text;
+            var selectedDate = TaskDatePicker.Date;
+            var selectedTime = TaskTimePicker.Time;
 
-            _tasks.Add(task);
-            await Navigation.PopAsync();
+            // Создаем полное DateTime для уведомления
+            var notificationDateTime = selectedDate + selectedTime;
+
+            if (!string.IsNullOrWhiteSpace(taskName))
+            {
+                var newTask = new TaskItem
+                {
+                    Name = taskName,
+                    Time = notificationDateTime.ToString("g"),
+                    NotificationTime = notificationDateTime,
+                    IsCompleted = false,
+                    StartTime = DateTime.Now // Устанавливаем текущее время как время создания задачи
+                };
+
+                _tasks.Add(newTask); // Добавляем новую задачу в список
+                Navigation.PopAsync(); // Возвращаемся на главную страницу
+            }
+            else
+            {
+                DisplayAlert("Ошибка", "Пожалуйста, введите название задачи.", "OK");
+            }
         }
     }
 }

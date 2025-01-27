@@ -1,27 +1,133 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SchedulePlannerApp.MainPage"
-             Title="Планировщик задач">
+             Title="Список задач">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <!-- Заголовок -->
+            <Label Text="Список задач"
+                   FontSize="24"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Start"
+                   Margin="0,10" />
 
-    <!-- Основной стек для вертикального расположения элементов -->
-    <VerticalStackLayout Padding="20">
-        <!-- Заголовок -->
-        <Label Text="Ваши задачи" 
-               FontSize="24" 
-               HorizontalOptions="Center" />
+            <!-- Список задач -->
+            <CollectionView x:Name="TaskListView"
+                            Margin="0,10"
+                            ItemsLayout="VerticalList"
+                            SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10"
+                               Margin="0,5"
+                               BackgroundColor="White"
+                               CornerRadius="10"
+                               BorderColor="LightGray"
+                               HasShadow="True">
+                            <Grid ColumnDefinitions="*, Auto"
+                                  RowDefinitions="Auto, Auto, Auto, Auto"
+                                  ColumnSpacing="10"
+                                  RowSpacing="5">
 
-        <!-- Список задач -->
-        <ListView x:Name="TaskListView" Margin="0,20">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell Text="{Binding Name}" 
-                              Detail="{Binding Time}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                                <!-- Название задачи -->
+                                <Label Text="{Binding Name}"
+                                       Grid.Row="0"
+                                       Grid.Column="0"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="Black"
+                                       LineBreakMode="WordWrap"
+                                       MaxLines="2" />
 
-        <!-- Кнопка добавления задачи -->
-        <Button Text="Добавить задачу" 
-                Clicked="OnAddTaskClicked" />
-    </VerticalStackLayout>
+                                <!-- Указанное время -->
+                                <Label Text="Указанное время:"
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       FontSize="12"
+                                       TextColor="Gray" />
+                                <Label Text="{Binding Time}"
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       FontSize="12"
+                                       TextColor="Black"
+                                       HorizontalOptions="End" />
+
+                                <!-- Оставшееся время -->
+                                <Label Text="Оставшееся время:"
+                                       Grid.Row="2"
+                                       Grid.Column="0"
+                                       FontSize="12"
+                                       TextColor="Gray" />
+                                <Label Text="{Binding TimeRemaining}"
+                                       Grid.Row="2"
+                                       Grid.Column="1"
+                                       FontSize="12"
+                                       TextColor="Blue"
+                                       HorizontalOptions="End" />
+
+                                <!-- Кнопки -->
+                                <HorizontalStackLayout Grid.Row="3"
+                                                       Grid.ColumnSpan="2"
+                                                       Spacing="10"
+                                                       HorizontalOptions="End">
+                                    <!-- Кнопка выполнения -->
+                                    <Button Text="Готово"
+                                            CommandParameter="{Binding .}"
+                                            Clicked="OnCompleteTaskClicked"
+                                            BackgroundColor="Green"
+                                            TextColor="White"
+                                            CornerRadius="5"
+                                            WidthRequest="100" />
+
+                                    <!-- Кнопка удаления -->
+                                    <Button Text="Удалить"
+                                            CommandParameter="{Binding .}"
+                                            Clicked="OnDeleteTaskClicked"
+                                            BackgroundColor="Red"
+                                            TextColor="White"
+                                            CornerRadius="5"
+                                            WidthRequest="100" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Кнопки действий -->
+            <VerticalStackLayout Spacing="10" Margin="0,20">
+                <!-- Кнопка добавления новой задачи -->
+                <Button Text="Добавить задачу"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Clicked="OnAddTaskClicked"
+                        CornerRadius="10"
+                        WidthRequest="200" />
+
+                <!-- Кнопка просмотра выполненных задач -->
+                <Button Text="Выполненные задачи"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Clicked="OnViewCompletedTasksClicked"
+                        CornerRadius="10"
+                        WidthRequest="200" />
+
+                <!-- Кнопка экспорта задач -->
+                <Button Text="Экспорт задач"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Clicked="OnExportTasksClicked"
+                        CornerRadius="10"
+                        WidthRequest="200" />
+
+                <!-- Кнопка импорта задач -->
+                <Button Text="Импорт задач"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Clicked="OnImportTasksClicked"
+                        CornerRadius="10"
+                        WidthRequest="200" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

@@ -1,0 +1,88 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SchedulePlannerApp.CompletedTasksPage"
+             Title="Выполненные задачи">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <!-- Заголовок -->
+            <Label Text="Выполненные задачи"
+                   FontSize="24"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Start"
+                   Margin="0,10" />
+
+            <!-- Список выполненных задач -->
+            <CollectionView x:Name="CompletedTaskListView"
+                            Margin="0,10"
+                            ItemsLayout="VerticalList"
+                            SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10"
+                               Margin="0,5"
+                               BackgroundColor="White"
+                               CornerRadius="10"
+                               BorderColor="LightGray"
+                               HasShadow="True">
+                            <Grid ColumnDefinitions="*, Auto"
+                                  RowDefinitions="Auto, Auto, Auto, Auto"
+                                  ColumnSpacing="10"
+                                  RowSpacing="5">
+
+                                <!-- Название задачи -->
+                                <Label Text="{Binding Name}"
+                                       Grid.Row="0"
+                                       Grid.Column="0"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="Black"
+                                       LineBreakMode="WordWrap"
+                                       MaxLines="2" />
+
+                                <!-- Указанное время -->
+                                <Label Text="Указанное время:"
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       FontSize="12"
+                                       TextColor="Gray" />
+                                <Label Text="{Binding Time}"
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       FontSize="12"
+                                       TextColor="Black"
+                                       HorizontalOptions="End" />
+
+                                <!-- Длительность выполнения -->
+                                <Label Text="Длительность выполнения:"
+                                       Grid.Row="2"
+                                       Grid.Column="0"
+                                       FontSize="12"
+                                       TextColor="Gray" />
+                                       <Label Text="{Binding DurationFormatted}"
+                                       Grid.Row="2"
+                                       Grid.Column="1"
+                                       FontSize="12"
+                                       TextColor="Blue"
+                                       HorizontalOptions="End" />
+
+
+                                <!-- Кнопка удаления -->
+                                <Button Text="Удалить"
+                                        Grid.Row="3"
+                                        Grid.ColumnSpan="2"
+                                        CommandParameter="{Binding .}"
+                                        Clicked="OnDeleteCompletedTaskClicked"
+                                        BackgroundColor="Red"
+                                        TextColor="White"
+                                        CornerRadius="5"
+                                        WidthRequest="100"
+                                        HorizontalOptions="End" />          
+
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

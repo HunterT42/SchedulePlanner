@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using Plugin.LocalNotification;
 
 namespace SchedulePlannerApp
 {
@@ -22,7 +23,7 @@ namespace SchedulePlannerApp
             CompletedTasks.CollectionChanged += (s, e) => SaveCompletedTasks();
             LoadTasks();
             LoadCompletedTasks();
-            StartTimer(); // Запускаем таймер для обновления оставшегося времени
+            StartTimer(); // Запускаем таймер для обновления оставшегося времени и проверки уведомлений
         }
 
         private void StartTimer()
@@ -31,10 +32,32 @@ namespace SchedulePlannerApp
             {
                 foreach (var task in Tasks)
                 {
+                    // Проверяем время выполнения задачи
+                    if (DateTime.Now >= task.NotificationTime && !task.IsCompleted)
+                    {
+                        SendNotification(task.Name);
+                        // Помечаем задачу как уведомленную (чтобы не отправлять уведомления повторно)
+                        task.NotificationTime = DateTime.MaxValue;
+                    }
+
                     OnPropertyChanged(nameof(task.TimeRemaining));
                 }
                 return true; // Таймер продолжается
             });
+        }
+
+        private void SendNotification(string taskName)
+        {
+            // Отправка локального уведомления
+            var notification = new NotificationRequest
+            {
+                NotificationId = new Random().Next(1000, 9999), // Уникальный ID для уведомления
+                Title = "Напоминание о задаче",
+                Description = $"Время выполнения задачи \"{taskName}\" истекло!",
+                Schedule = null // Уведомление отправляется немедленно
+            };
+
+            LocalNotificationCenter.Current.Show(notification); // Используем LocalNotificationCenter
         }
 
         private void SaveTasks()
@@ -175,12 +198,10 @@ namespace SchedulePlannerApp
     public class TaskItem
     {
         public string Name { get; set; }
-        public string Time { get; set; } // Указанное время выполнения
-        public DateTime NotificationTime { get; set; } // Для уведомлений
-        public bool IsCompleted { get; set; } // Статус выполнения
+        public DateTime NotificationTime { get; set; } // Время уведомления
+        public bool IsCompleted { get; set; } // Статус выполнения задачи
         public DateTime StartTime { get; set; } // Время начала выполнения
 
-        // Оставшееся время до выполнения задачи
         public string TimeRemaining
         {
             get
@@ -188,46 +209,14 @@ namespace SchedulePlannerApp
                 var remaining = NotificationTime - DateTime.Now;
                 if (remaining > TimeSpan.Zero)
                 {
-                    // Форматируем оставшееся время
                     int days = remaining.Days;
                     int hours = remaining.Hours;
                     int minutes = remaining.Minutes;
-
-                    // Составляем строку в формате "1д1ч1м"
-                    return $"{(days > 0 ? $"{days}д" : "")}" +
-                           $"{(hours > 0 ? $"{hours}ч" : "")}" +
-                           $"{(minutes > 0 ? $"{minutes}м" : "")}".Trim();
+                    return $"{(days > 0 ? $"{days}д" : "")}{(hours > 0 ? $"{hours}ч" : "")}{(minutes > 0 ? $"{minutes}м" : "")}".Trim();
                 }
 
                 return "Время истекло";
             }
         }
-
-        // Продолжительность выполнения задачи в строковом формате
-        public string DurationFormatted
-        {
-            get
-            {
-                if (IsCompleted)
-                {
-                    var duration = DateTime.Now - StartTime;
-                    if (duration > TimeSpan.Zero)
-                    {
-                        int days = duration.Days;
-                        int hours = duration.Hours;
-                        int minutes = duration.Minutes;
-
-                        // Форматируем строку в "1д1ч1м"
-                        return $"{(days > 0 ? $"{days}д" : "")}" +
-                               $"{(hours > 0 ? $"{hours}ч" : "")}" +
-                               $"{(minutes > 0 ? $"{minutes}м" : "")}".Trim();
-                    }
-                }
-
-                return "Нет данных";
-            }
-        }
     }
-
-
 }

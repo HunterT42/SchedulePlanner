@@ -14,7 +14,7 @@ namespace SchedulePlannerApp
             _tasks = tasks;
         }
 
-        private void OnAddTaskClicked(object sender, EventArgs e)
+        private async void OnAddTaskClicked(object sender, EventArgs e)
         {
             var taskName = TaskNameEntry.Text;
             var selectedDate = TaskDatePicker.Date;
@@ -28,18 +28,20 @@ namespace SchedulePlannerApp
                 var newTask = new TaskItem
                 {
                     Name = taskName,
-                    Time = notificationDateTime.ToString("g"),
-                    NotificationTime = notificationDateTime,
+                    NotificationTime = notificationDateTime, // Используем NotificationTime для хранения времени
                     IsCompleted = false,
                     StartTime = DateTime.Now // Устанавливаем текущее время как время создания задачи
                 };
 
                 _tasks.Add(newTask); // Добавляем новую задачу в список
-                Navigation.PopAsync(); // Возвращаемся на главную страницу
+
+                // Возвращаемся на главную страницу
+                await Navigation.PopAsync();
             }
             else
             {
-                DisplayAlert("Ошибка", "Пожалуйста, введите название задачи.", "OK");
+                // Показать сообщение об ошибке, если название задачи пустое
+                await DisplayAlert("Ошибка", "Пожалуйста, введите название задачи.", "OK");
             }
         }
     }

@@ -22,23 +22,33 @@ namespace SchedulePlannerApp
             CompletedTasks.CollectionChanged += (s, e) => SaveCompletedTasks();
             LoadTasks();
             LoadCompletedTasks();
+            StartTimer();
         }
 
-        // Сохранение задач в локальное хранилище
+        private void StartTimer()
+        {
+            Dispatcher.StartTimer(TimeSpan.FromSeconds(1), () =>
+            {
+                foreach (var task in Tasks)
+                {
+                    OnPropertyChanged(nameof(task.TimeRemaining));
+                }
+                return true;
+            });
+        }
+
         private void SaveTasks()
         {
             var tasksJson = JsonSerializer.Serialize(Tasks);
             Preferences.Set("SavedTasks", tasksJson);
         }
 
-        // Сохранение выполненных задач
         private void SaveCompletedTasks()
         {
             var completedTasksJson = JsonSerializer.Serialize(CompletedTasks);
             Preferences.Set("SavedCompletedTasks", completedTasksJson);
         }
 
-        // Загрузка задач из локального хранилища
         private void LoadTasks()
         {
             var tasksJson = Preferences.Get("SavedTasks", string.Empty);
@@ -52,7 +62,6 @@ namespace SchedulePlannerApp
             }
         }
 
-        // Загрузка выполненных задач
         private void LoadCompletedTasks()
         {
             var completedTasksJson = Preferences.Get("SavedCompletedTasks", string.Empty);
@@ -61,6 +70,11 @@ namespace SchedulePlannerApp
                 var loadedCompletedTasks = JsonSerializer.Deserialize<ObservableCollection<TaskItem>>(completedTasksJson);
                 foreach (var task in loadedCompletedTasks)
                 {
+                    // Совместимость со старыми версиями <<<
+                    if (task.IsCompleted && !task.EndTime.HasValue)
+                    {
+                        task.EndTime = task.StartTime.AddMinutes(1);
+                    }
                     CompletedTasks.Add(task);
                 }
             }
@@ -73,7 +87,7 @@ namespace SchedulePlannerApp
 
         private void OnDeleteTaskClicked(object sender, EventArgs e)
         {
-            var button = sender as ImageButton;
+            var button = sender as Button;
             if (button?.CommandParameter is TaskItem task)
             {
                 Tasks.Remove(task);
@@ -81,16 +95,17 @@ namespace SchedulePlannerApp
             }
         }
 
-        // Пометка задачи как выполненной
         private void OnCompleteTaskClicked(object sender, EventArgs e)
         {
-            var button = sender as ImageButton;
+            var button = sender as Button;
             if (button?.CommandParameter is TaskItem task)
             {
                 task.IsCompleted = true;
+                task.EndTime = DateTime.Now; // Фиксация времени завершения <<<
                 CompletedTasks.Add(task);
                 Tasks.Remove(task);
                 SaveTasks();
+                SaveCompletedTasks();
             }
         }
 
@@ -99,7 +114,6 @@ namespace SchedulePlannerApp
             await Navigation.PushAsync(new CompletedTasksPage(CompletedTasks));
         }
 
-        // Экспорт задач в JSON-файл
         private async void OnExportTasksClicked(object sender, EventArgs e)
         {
             try
@@ -116,33 +130,28 @@ namespace SchedulePlannerApp
             }
         }
 
-        // Импорт задач из JSON-файла
         private async void OnImportTasksClicked(object sender, EventArgs e)
         {
             try
             {
-                // Определяем пользовательский тип файла JSON
                 var customJsonFileType = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-        {
-            { DevicePlatform.iOS, new[] { "public.json" } }, // iOS
-            { DevicePlatform.Android, new[] { "application/json" } }, // Android
-            { DevicePlatform.WinUI, new[] { ".json" } }, // Windows
-            { DevicePlatform.MacCatalyst, new[] { "public.json" } } // Mac
-        });
+                {
+                    { DevicePlatform.iOS, new[] { "public.json" } },
+                    { DevicePlatform.Android, new[] { "application/json" } },
+                    { DevicePlatform.WinUI, new[] { ".json" } },
+                    { DevicePlatform.MacCatalyst, new[] { "public.json" } }
+                });
 
-                // Настраиваем параметры выбора файла
                 var pickOptions = new PickOptions
                 {
                     FileTypes = customJsonFileType,
                     PickerTitle = "Выберите JSON файл для импорта"
                 };
 
-                // Вызываем диалог выбора файла
                 var fileResult = await FilePicker.Default.PickAsync(pickOptions);
 
                 if (fileResult != null)
                 {
-                    // Читаем содержимое выбранного файла
                     var importedJson = File.ReadAllText(fileResult.FullPath);
                     var importedTasks = JsonSerializer.Deserialize<ObservableCollection<TaskItem>>(importedJson);
 
@@ -166,15 +175,58 @@ namespace SchedulePlannerApp
                 await DisplayAlert("Ошибка импорта", $"Не удалось импортировать задачи: {ex.Message}", "ОК");
             }
         }
-
     }
 
-    // Модель данных для задачи
     public class TaskItem
     {
         public string Name { get; set; }
-        public string Time { get; set; }
-        public DateTime NotificationTime { get; set; }
-        public bool IsCompleted { get; set; }
+        public string Time { get; set; } // Указанное время выполнения
+        public DateTime NotificationTime { get; set; } // Для уведомлений
+        public bool IsCompleted { get; set; } // Статус выполнения
+        public DateTime StartTime { get; set; } // Время создания задачи
+        public DateTime? EndTime { get; set; } // Время завершения задачи <<<
+
+        // Оставшееся время до выполнения задачи
+        public string TimeRemaining
+        {
+            get
+            {
+                if (IsCompleted) return "Завершено"; // <<<
+
+                var remaining = NotificationTime - DateTime.Now;
+                if (remaining > TimeSpan.Zero)
+                {
+                    int days = remaining.Days;
+                    int hours = remaining.Hours;
+                    int minutes = remaining.Minutes;
+
+                    return $"{(days > 0 ? $"{days}д" : "")}" +
+                           $"{(hours > 0 ? $"{hours}ч" : "")}" +
+                           $"{(minutes > 0 ? $"{minutes}м" : "")}".Trim();
+                }
+
+                return "Время истекло";
+            }
+        }
+
+        // Продолжительность выполнения задачи
+        public string DurationFormatted
+        {
+            get
+            {
+                if (IsCompleted && EndTime.HasValue) // <<<
+                {
+                    var duration = EndTime.Value - StartTime;
+                    int days = duration.Days;
+                    int hours = duration.Hours;
+                    int minutes = duration.Minutes;
+
+                    return $"{(days > 0 ? $"{days}д" : "")}" +
+                           $"{(hours > 0 ? $"{hours}ч" : "")}" +
+                           $"{(minutes > 0 ? $"{minutes}м" : "")}".Trim();
+                }
+                return "Нет данных";
+            }
+        }
     }
 }

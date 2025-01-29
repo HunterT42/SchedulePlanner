@@ -24,8 +24,9 @@
                                CornerRadius="10"
                                BorderColor="LightGray"
                                HasShadow="True">
-                            <Grid ColumnDefinitions="*, Auto"
-                                  RowDefinitions="Auto, Auto, Auto, Auto"
+                            
+                            <Grid ColumnDefinitions="Auto, *"
+                                  RowDefinitions="Auto, Auto, Auto, Auto, Auto"
                                   ColumnSpacing="10"
                                   RowSpacing="5">
 
@@ -33,42 +34,61 @@
                                 <Label Text="{Binding Name}"
                                        Grid.Row="0"
                                        Grid.Column="0"
+                                       Grid.ColumnSpan="2"
                                        FontSize="16"
                                        FontAttributes="Bold"
                                        TextColor="Black"
                                        LineBreakMode="WordWrap"
                                        MaxLines="2" />
 
-                                <!-- Указанное время -->
-                                <Label Text="Указанное время:"
+                                <!-- Категория -->
+                                <Label Text="Категория:"
                                        Grid.Row="1"
                                        Grid.Column="0"
                                        FontSize="12"
-                                       TextColor="Gray" />
-                                <Label Text="{Binding Time}"
+                                       TextColor="Gray" 
+                                       VerticalOptions="Center"/>
+                                <Label Text="{Binding Category}"
                                        Grid.Row="1"
-                                       Grid.Column="1"
-                                       FontSize="12"
-                                       TextColor="Black"
-                                       HorizontalOptions="End" />
-
-                                <!-- Длительность выполнения -->
-                                <Label Text="Длительность выполнения:"
-                                       Grid.Row="2"
-                                       Grid.Column="0"
-                                       FontSize="12"
-                                       TextColor="Gray" />
-                                       <Label Text="{Binding DurationFormatted}"
-                                       Grid.Row="2"
                                        Grid.Column="1"
                                        FontSize="12"
                                        TextColor="Blue"
-                                       HorizontalOptions="End" />
+                                       HorizontalOptions="End"
+                                       VerticalOptions="Center"/>
 
+                                <!-- Указанное время -->
+                                <Label Text="Указанное время:"
+                                       Grid.Row="2"
+                                       Grid.Column="0"
+                                       FontSize="12"
+                                       TextColor="Gray"
+                                       VerticalOptions="Center"/>
+                                <Label Text="{Binding Time}"
+                                       Grid.Row="2"
+                                       Grid.Column="1"
+                                       FontSize="12"
+                                       TextColor="Black"
+                                       HorizontalOptions="End"
+                                       VerticalOptions="Center"/>
+
+                                <!-- Длительность выполнения -->
+                                <Label Text="Длительность выполнения:"
+                                       Grid.Row="3"
+                                       Grid.Column="0"
+                                       FontSize="12"
+                                       TextColor="Gray"
+                                       VerticalOptions="Center"/>
+                                <Label Text="{Binding DurationFormatted}"
+                                       Grid.Row="3"
+                                       Grid.Column="1"
+                                       FontSize="12"
+                                       TextColor="Blue"
+                                       HorizontalOptions="End"
+                                       VerticalOptions="Center"/>
 
                                 <!-- Кнопка удаления -->
                                 <Button Text="Удалить"
-                                        Grid.Row="3"
+                                        Grid.Row="4"
                                         Grid.ColumnSpan="2"
                                         CommandParameter="{Binding .}"
                                         Clicked="OnDeleteCompletedTaskClicked"
@@ -76,9 +96,10 @@
                                         TextColor="White"
                                         CornerRadius="5"
                                         WidthRequest="100"
-                                        HorizontalOptions="End" />          
-
+                                        HorizontalOptions="End"
+                                        Margin="0,5,0,0"/>
                             </Grid>
+
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

@@ -1,0 +1,55 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SchedulePlannerApp.EditCategoriesPage"
+             Title="Редактирование категорий">
+
+    <VerticalStackLayout Padding="20" Spacing="10">
+
+        <!-- Поле ввода новой категории -->
+        <HorizontalStackLayout Spacing="10">
+            <Entry x:Name="NewCategoryEntry"
+                   Placeholder="Введите новую категорию"
+                   WidthRequest="250"/>
+            <Button Text="Добавить" 
+                    Clicked="OnAddCategoryClicked"/>
+        </HorizontalStackLayout>
+
+        <!-- Список категорий -->
+        <CollectionView x:Name="CategoryListView">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10"
+                           Margin="5"
+                           BorderColor="Gray"
+                           CornerRadius="10"
+                           HasShadow="True">
+
+                        <Grid ColumnDefinitions="*, Auto"
+                              VerticalOptions="Center"
+                              Padding="5">
+
+                            <!-- Название категории -->
+                            <Label Text="{Binding .}" 
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   Grid.Column="0"
+                                   LineBreakMode="WordWrap"/>
+
+                            <!-- Кнопка удаления -->
+                            <Button Text="Удалить"
+                             Clicked="OnDeleteCategoryClicked"
+                             CommandParameter="{Binding .}"
+                             BackgroundColor="red"
+                             FontSize="14"
+                             TextColor="white"
+                             HorizontalOptions="End"
+                             WidthRequest="90"
+                             Grid.Column="1"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

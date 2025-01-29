@@ -7,13 +7,21 @@
         <Label Text="Добавить новую задачу" FontSize="24" HorizontalOptions="Center" />
 
         <!-- Ввод имени задачи -->
-        <Entry x:Name="TaskNameEntry" Placeholder="Название задачи" />
+        <Entry x:Name="TaskNameEntry" Placeholder="Название задачи" Keyboard="Text"/>
 
         <!-- Выбор даты -->
         <DatePicker x:Name="TaskDatePicker" Format="D" />
 
         <!-- Выбор времени -->
         <TimePicker x:Name="TaskTimePicker" Format="t" />
+        <!-- Выбор категории -->
+        <Label Text="Категория" FontSize="16" />
+        <Picker x:Name="CategoryPicker"
+        Title="Выберите категорию"
+        ItemsSource="{Binding Categories}" />
+
+
+
 
         <!-- Кнопка добавления задачи -->
         <Button Text="Добавить задачу" Clicked="OnAddTaskClicked" />

@@ -11,12 +11,15 @@ namespace SchedulePlannerApp
     {
         public ObservableCollection<TaskItem> Tasks { get; set; }
         public ObservableCollection<TaskItem> CompletedTasks { get; set; }
+        public ObservableCollection<string> Categories { get; set; }
 
         public MainPage()
         {
             InitializeComponent();
             Tasks = new ObservableCollection<TaskItem>();
             CompletedTasks = new ObservableCollection<TaskItem>();
+            Categories = new ObservableCollection<string> { "Здоровье", "Семья", "Личное" }; // Базовые категории
+
             TaskListView.ItemsSource = Tasks;
             Tasks.CollectionChanged += (s, e) => SaveTasks();
             CompletedTasks.CollectionChanged += (s, e) => SaveCompletedTasks();
@@ -84,6 +87,7 @@ namespace SchedulePlannerApp
         {
             await Navigation.PushAsync(new AddTaskPage(Tasks));
         }
+
 
         private void OnDeleteTaskClicked(object sender, EventArgs e)
         {
@@ -175,16 +179,25 @@ namespace SchedulePlannerApp
                 await DisplayAlert("Ошибка импорта", $"Не удалось импортировать задачи: {ex.Message}", "ОК");
             }
         }
+        private async void OnEditCategoriesClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new EditCategoriesPage());
+        }
+
+
     }
 
     public class TaskItem
     {
         public string Name { get; set; }
         public string Time { get; set; } // Указанное время выполнения
-        public DateTime NotificationTime { get; set; } // Для уведомлений
+        public DateTime NotificationTime { get; set; } // Время для уведомления
         public bool IsCompleted { get; set; } // Статус выполнения
         public DateTime StartTime { get; set; } // Время создания задачи
-        public DateTime? EndTime { get; set; } // Время завершения задачи <<<
+        public DateTime? EndTime { get; set; } // Время завершения задачи
+        public string Category { get; set; } // Категория задачи
+
+
 
         // Оставшееся время до выполнения задачи
         public string TimeRemaining

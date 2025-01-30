@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SchedulePlannerApp.StatisticsPage"
+             Title="Статистика">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="15">
+
+            <!-- Общее количество выполненных задач -->
+            <Label Text="Всего выполненных задач:" FontSize="18" TextColor="Black"/>
+            <Label x:Name="TotalTasksLabel" FontSize="24" FontAttributes="Bold" TextColor="Blue"/>
+
+            <!-- Средняя длительность выполнения -->
+            <Label Text="Средняя длительность выполнения (минуты):" FontSize="18" TextColor="Black"/>
+            <Label x:Name="AverageDurationLabel" FontSize="24" FontAttributes="Bold" TextColor="Blue"/>
+
+            <!-- Самый продуктивный день -->
+            <Label Text="Самый продуктивный день:" FontSize="18" TextColor="Black"/>
+            <Label x:Name="MostProductiveDayLabel" FontSize="24" FontAttributes="Bold" TextColor="Blue"/>
+
+            <!-- Количество задач в каждой категории -->
+            <Label Text="Количество задач в каждой категории:" FontSize="18" TextColor="Black"/>
+            <ListView x:Name="CategoryStatsList">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" Padding="5">
+                                <Label Text="{Binding Category}" FontSize="16" TextColor="Black"/>
+                                <Label Text="{Binding Count}" FontSize="16" TextColor="Blue" HorizontalOptions="EndAndExpand"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

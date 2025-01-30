@@ -149,6 +149,15 @@
                         CornerRadius="10"
                         WidthRequest="200"/>
 
+                <!-- Кнопка статистики -->
+                <Button Text="📊 Статистика"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Clicked="OnViewStatisticsClicked"
+                        CornerRadius="10"
+                        WidthRequest="200" />
+
+
             </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>

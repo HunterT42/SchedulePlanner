@@ -22,7 +22,12 @@ namespace SchedulePlannerApp
 
             TaskListView.ItemsSource = Tasks;
             Tasks.CollectionChanged += (s, e) => SaveTasks();
-            CompletedTasks.CollectionChanged += (s, e) => SaveCompletedTasks();
+            CompletedTasks.CollectionChanged += (s, e) =>
+            {
+                SaveCompletedTasks();
+                UpdateStatistics(); // Обновляем статистику при изменении выполненных задач <<<
+            };
+
             LoadTasks();
             LoadCompletedTasks();
             StartTimer();
@@ -88,7 +93,6 @@ namespace SchedulePlannerApp
             await Navigation.PushAsync(new AddTaskPage(Tasks));
         }
 
-
         private void OnDeleteTaskClicked(object sender, EventArgs e)
         {
             var button = sender as Button;
@@ -110,6 +114,7 @@ namespace SchedulePlannerApp
                 Tasks.Remove(task);
                 SaveTasks();
                 SaveCompletedTasks();
+                UpdateStatistics(); // Обновляем статистику после завершения задачи <<<
             }
         }
 
@@ -179,12 +184,31 @@ namespace SchedulePlannerApp
                 await DisplayAlert("Ошибка импорта", $"Не удалось импортировать задачи: {ex.Message}", "ОК");
             }
         }
+
         private async void OnEditCategoriesClicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new EditCategoriesPage());
         }
 
+        private void OnViewStatisticsClicked(object sender, EventArgs e)
+        {
+            Navigation.PushAsync(new StatisticsPage(CompletedTasks)); // Передаём выполненные задачи
+        }
 
+        // Обновление статистики <<<
+        private void UpdateStatistics()
+        {
+            Preferences.Set("CompletedTaskCount", CompletedTasks.Count);
+
+            if (CompletedTasks.Count > 0)
+            {
+                var averageDuration = CompletedTasks
+                    .Where(task => task.EndTime.HasValue)
+                    .Average(task => (task.EndTime.Value - task.StartTime).TotalMinutes);
+
+                Preferences.Set("AverageTaskDuration", Math.Round(averageDuration, 2));
+            }
+        }
     }
 
     public class TaskItem
@@ -197,28 +221,15 @@ namespace SchedulePlannerApp
         public DateTime? EndTime { get; set; } // Время завершения задачи
         public string Category { get; set; } // Категория задачи
 
-
-
         // Оставшееся время до выполнения задачи
         public string TimeRemaining
         {
             get
             {
-                if (IsCompleted) return "Завершено"; // <<<
+                if (IsCompleted) return "Завершено";
 
                 var remaining = NotificationTime - DateTime.Now;
-                if (remaining > TimeSpan.Zero)
-                {
-                    int days = remaining.Days;
-                    int hours = remaining.Hours;
-                    int minutes = remaining.Minutes;
-
-                    return $"{(days > 0 ? $"{days}д" : "")}" +
-                           $"{(hours > 0 ? $"{hours}ч" : "")}" +
-                           $"{(minutes > 0 ? $"{minutes}м" : "")}".Trim();
-                }
-
-                return "Время истекло";
+                return remaining > TimeSpan.Zero ? remaining.ToString(@"d'д 'h'ч 'm'м'") : "Время истекло";
             }
         }
 
@@ -227,16 +238,10 @@ namespace SchedulePlannerApp
         {
             get
             {
-                if (IsCompleted && EndTime.HasValue) // <<<
+                if (IsCompleted && EndTime.HasValue)
                 {
                     var duration = EndTime.Value - StartTime;
-                    int days = duration.Days;
-                    int hours = duration.Hours;
-                    int minutes = duration.Minutes;
-
-                    return $"{(days > 0 ? $"{days}д" : "")}" +
-                           $"{(hours > 0 ? $"{hours}ч" : "")}" +
-                           $"{(minutes > 0 ? $"{minutes}м" : "")}".Trim();
+                    return duration.ToString(@"d'д 'h'ч 'm'м'");
                 }
                 return "Нет данных";
             }

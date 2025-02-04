@@ -98,8 +98,8 @@ namespace SchedulePlannerApp
             var button = sender as Button;
             if (button?.CommandParameter is TaskItem task)
             {
-                Tasks.Remove(task);
-                SaveTasks();
+                Tasks.Remove(task);//Удаление из списка
+                SaveTasks();//Сохраняем изменения
             }
         }
 
@@ -109,12 +109,12 @@ namespace SchedulePlannerApp
             if (button?.CommandParameter is TaskItem task)
             {
                 task.IsCompleted = true;
-                task.EndTime = DateTime.Now; // Фиксация времени завершения <<<
+                task.EndTime = DateTime.Now; // Фиксация времени завершения 
                 CompletedTasks.Add(task);
                 Tasks.Remove(task);
                 SaveTasks();
                 SaveCompletedTasks();
-                UpdateStatistics(); // Обновляем статистику после завершения задачи <<<
+                UpdateStatistics(); // Обновляем статистику после завершения задачи
             }
         }
 

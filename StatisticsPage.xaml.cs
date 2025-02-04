@@ -38,7 +38,7 @@ namespace SchedulePlannerApp
             if (completedWithEndTime.Count > 0)
             {
                 double averageDuration = completedWithEndTime
-                    .Average(t => (t.EndTime.Value - t.StartTime).TotalMinutes); // УБРАН .Value У TimeSpan
+                    .Average(t => (t.EndTime.Value - t.StartTime).TotalMinutes); // 
 
                 AverageDurationLabel.Text = Math.Round(averageDuration, 2).ToString();
             }

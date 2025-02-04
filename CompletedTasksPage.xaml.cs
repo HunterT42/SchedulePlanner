@@ -25,7 +25,7 @@ namespace SchedulePlannerApp
             if (button?.CommandParameter is TaskItem task)
             {
                 CompletedTasks.Remove(task); // ”дал€ем задачу из списка выполненных задач
-                // «десь можно добавить сохранение состо€ни€, если требуетс€
+                
             }
         }
 
